@@ -1,63 +1,31 @@
-import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, View } from "react-native";
-import { Camera } from "expo-camera";
-import * as FaceDetector from "expo-face-detector";
-import { StatusBar } from "expo-status-bar";
-import FaceRecognition from "./FaceRecognition";
-
-const FaceRec = () => {
-  const [hasPermission, setHasPermission] = useState(null);
-  const [cameraRef, setCameraRef] = useState(null);
-
-  useEffect(() => {
-    (async () => {
-      const { status } = await Camera.requestCameraPermissionsAsync();
-      setHasPermission(status === "granted");
-    })();
-  }, []);
-
-  const handleFacesDetected = ({ faces }) => {
-    console.log(faces);
-  };
-
-  if (hasPermission === null) {
-    return <View />;
-  }
-  if (hasPermission === false) {
-    return <Text>No access to camera</Text>;
-  }
-
-  return (
-    <Camera
-      type={Camera.Constants.Type.front} // Use the front camera
-      style={styles.camera}
-      ref={(ref) => setCameraRef(ref)}
-      onFacesDetected={handleFacesDetected}
-      faceDetectorSettings={{
-        mode: FaceDetector.FaceDetectorMode.fast,
-        detectLandmarks: FaceDetector.FaceDetectorLandmarks.none,
-        runClassifications: FaceDetector.FaceDetectorClassifications.none,
-        minDetectionInterval: 100,
-        tracking: true,
-      }}
-    />
-  );
-};
+import React from "react";
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import LoginScreen from "./src/screens/auth/LoginScreen";
+import HomeScreen from "./src/screens/home/HomeScreen";
+import SignupScreen from "./src/screens/auth/Signup";
+import Toast from "react-native-toast-message";
+import AboutScreen from "./src/screens/home/AboutScreen";
+import FaceRecognition from "./src/screens/home/FaceRecognition";
 
 export default function App() {
+  const Stack = createNativeStackNavigator();
   return (
-    <View style={styles.container}>
-      <FaceRecognition />
-    </View>
+    <>
+      <NavigationContainer>
+        <Stack.Navigator
+          screenOptions={{
+            headerShown: false,
+          }}
+        >
+          <Stack.Screen name="Login" component={LoginScreen} />
+          <Stack.Screen name="Home" component={HomeScreen} />
+          <Stack.Screen name="FaceRecognition" component={FaceRecognition} />
+          <Stack.Screen name="Signup" component={SignupScreen} />
+          <Stack.Screen name="About" component={AboutScreen} />
+        </Stack.Navigator>
+      </NavigationContainer>
+      <Toast />
+    </>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-  },
-  camera: {
-    flex: 1,
-  },
-});
