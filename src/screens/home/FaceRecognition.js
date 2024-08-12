@@ -69,7 +69,7 @@ const FaceRecognition = () => {
           }}
         >
           <Text style={styles.faceLabel}>
-            {faceTimers[face.faceID] === "showLabel" ? "Micheal" : "Unknown"}
+            {faceTimers[face.faceID] === "showLabel" ? "David" : "Unknown"}
           </Text>
         </View>
       ))}

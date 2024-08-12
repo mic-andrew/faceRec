@@ -10,33 +10,23 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import Toast from "react-native-toast-message";
-import { loginRequest } from "../../requests/authRequests";
 
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleLogin = async () => {
+  const handleLogin = () => {
     setLoading(true);
-    try {
-      const response = await loginRequest(email, password);
-      console.log("Login successful:", response);
+    setTimeout(() => {
+      setLoading(false);
       Toast.show({
         type: "success",
         text1: "Login Successful",
         text2: "Welcome back!",
       });
       navigation.navigate("Home");
-    } catch (error) {
-      Toast.show({
-        type: "error",
-        text1: "Login Failed",
-        text2: error.message || "An error occurred during login",
-      });
-    } finally {
-      setLoading(false);
-    }
+    }, 5000); // Mocking a 5-second delay before login
   };
 
   return (
@@ -53,7 +43,7 @@ export default function LoginScreen({ navigation }) {
           </Text>
 
           <Text className="text-gray-400 mb-6">
-           Final Project For Facial Recognition
+            Final Project For Facial Recognition
           </Text>
 
           <View className="bg-gray-800 rounded-lg p-4 mb-4">
