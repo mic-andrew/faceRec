@@ -6,6 +6,7 @@ import * as FaceDetector from "expo-face-detector";
 const FaceRecognition = () => {
   const [hasPermission, setHasPermission] = useState(null);
   const [faces, setFaces] = useState([]);
+  const [faceTimers, setFaceTimers] = useState({});
 
   useEffect(() => {
     (async () => {
@@ -15,7 +16,22 @@ const FaceRecognition = () => {
   }, []);
 
   const handleFacesDetected = ({ faces }) => {
+    const newFaceTimers = { ...faceTimers };
+
+    faces.forEach((face) => {
+      if (!faceTimers[face.faceID]) {
+        // Start a timer for the face
+        newFaceTimers[face.faceID] = setTimeout(() => {
+          setFaceTimers((prevTimers) => ({
+            ...prevTimers,
+            [face.faceID]: "showLabel", // Mark this face to show the label
+          }));
+        }, 7000); // 7 seconds
+      }
+    });
+
     setFaces(faces);
+    setFaceTimers(newFaceTimers);
   };
 
   if (hasPermission === null) {
@@ -48,8 +64,14 @@ const FaceRecognition = () => {
             left: face.bounds.origin.x,
             width: face.bounds.size.width,
             height: face.bounds.size.height,
+            borderColor:
+              faceTimers[face.faceID] === "showLabel" ? "green" : "red",
           }}
-        />
+        >
+          <Text style={styles.faceLabel}>
+            {faceTimers[face.faceID] === "showLabel" ? "Micheal" : "Unknown"}
+          </Text>
+        </View>
       ))}
     </View>
   );
@@ -65,8 +87,18 @@ const styles = StyleSheet.create({
   faceBox: {
     position: "absolute",
     borderWidth: 2,
-    borderColor: "red",
     backgroundColor: "rgba(0, 0, 0, 0.2)",
+  },
+  faceLabel: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    color: "white",
+    padding: 2,
+    borderRadius: 3,
+    textAlign: "center",
+    width: "100%",
   },
 });
 
