@@ -69,7 +69,7 @@ const EmotionRecognition = () => {
           }}
         >
           <Text style={styles.faceLabel}>
-            {faceTimers[face.faceID] === "showLabel" ? "David" : "Unknown"}
+            {faceTimers[face.faceID] === "showLabel" ? "Happy" : "Unknown"}
           </Text>
         </View>
       ))}
