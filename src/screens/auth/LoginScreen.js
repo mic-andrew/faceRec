@@ -39,7 +39,7 @@ export default function LoginScreen({ navigation }) {
 
         <View className="flex-1 justify-center">
           <Text className="text-white text-3xl font-bold mb-8">
-            Face Recognition
+            Emotion Recognition
           </Text>
 
           <Text className="text-gray-400 mb-6">

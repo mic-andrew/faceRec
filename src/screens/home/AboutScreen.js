@@ -43,7 +43,7 @@ export default function AboutScreen({ navigation }) {
 
         <View className="mb-6">
           <Text className="text-purple-500 font-semibold mb-2">
-            • Face Recognition
+            • Emotion Recognition
           </Text>
           <Text className="text-gray-400">
             Match detected faces against a database of known individuals.
