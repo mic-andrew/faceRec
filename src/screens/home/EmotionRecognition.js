@@ -3,7 +3,7 @@ import { View, Text, StyleSheet } from "react-native";
 import { Camera } from "expo-camera";
 import * as FaceDetector from "expo-face-detector";
 
-const FaceRecognition = () => {
+const EmotionRecognition = () => {
   const [hasPermission, setHasPermission] = useState(null);
   const [faces, setFaces] = useState([]);
   const [faceTimers, setFaceTimers] = useState({});
@@ -102,4 +102,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default FaceRecognition;
+export default EmotionRecognition;

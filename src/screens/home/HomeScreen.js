@@ -26,12 +26,12 @@ const HomeScreen = () => {
 
   return (
     <View className="flex-1 bg-black p-4">
-      <Text className="text-white text-2xl mb-4">Face Recognition</Text>
+      <Text className="text-white text-2xl mb-4">Emotion Recognition</Text>
 
       <View className="bg-gray-800 rounded-lg p-4 mb-4">
         <Text className="text-white">
-          We offer SDKs for face recognition, liveness detection, and ID card
-          recognition.
+          My final year project focuses on emotion recognition using advanced
+          facial analysis.
         </Text>
       </View>
 
@@ -44,7 +44,7 @@ const HomeScreen = () => {
           <Text className="text-white text-center ml-2">Enroll</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() => navigation.navigate("FaceRecognition")}
+          onPress={() => navigation.navigate("EmotionRecognition")}
           className="bg-purple-600 rounded-lg py-2 px-4 w-[48%] flex-row items-center justify-center"
         >
           <Ionicons name="search" size={24} color="white" />
