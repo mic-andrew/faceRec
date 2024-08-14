@@ -2,11 +2,12 @@ import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { Camera } from "expo-camera";
 import * as FaceDetector from "expo-face-detector";
+import { uploadImage } from "../../requests/faceRecRequests";
 
 const FaceRecognition = () => {
   const [hasPermission, setHasPermission] = useState(null);
   const [faces, setFaces] = useState([]);
-  const [faceTimers, setFaceTimers] = useState({});
+  const [cameraRef, setCameraRef] = useState(null);
 
   useEffect(() => {
     (async () => {
@@ -15,23 +16,24 @@ const FaceRecognition = () => {
     })();
   }, []);
 
-  const handleFacesDetected = ({ faces }) => {
-    const newFaceTimers = { ...faceTimers };
-
-    faces.forEach((face) => {
-      if (!faceTimers[face.faceID]) {
-        // Start a timer for the face
-        newFaceTimers[face.faceID] = setTimeout(() => {
-          setFaceTimers((prevTimers) => ({
-            ...prevTimers,
-            [face.faceID]: "showLabel", // Mark this face to show the label
-          }));
-        }, 7000); // 7 seconds
-      }
-    });
-
+  const handleFacesDetected = async ({ faces }) => {
     setFaces(faces);
-    setFaceTimers(newFaceTimers);
+
+    if (faces.length > 0 && cameraRef) {
+      const photo = await cameraRef.takePictureAsync({
+        quality: 0.5,
+        base64: true,
+      });
+      const photoUri = photo.uri;
+
+      // Send image to backend
+      try {
+        const result = await uploadImage(photoUri);
+        console.log("Recognition result:", result);
+      } catch (error) {
+        console.error("Error sending image to backend:", error);
+      }
+    }
   };
 
   if (hasPermission === null) {
@@ -44,8 +46,9 @@ const FaceRecognition = () => {
   return (
     <View style={styles.container}>
       <Camera
-        type={Camera.Constants.Type.front} // Use the front camera
+        type={Camera.Constants.Type.front}
         style={styles.camera}
+        ref={(ref) => setCameraRef(ref)}
         onFacesDetected={handleFacesDetected}
         faceDetectorSettings={{
           mode: FaceDetector.FaceDetectorMode.fast,
@@ -64,14 +67,8 @@ const FaceRecognition = () => {
             left: face.bounds.origin.x,
             width: face.bounds.size.width,
             height: face.bounds.size.height,
-            borderColor:
-              faceTimers[face.faceID] === "showLabel" ? "green" : "red",
           }}
-        >
-          <Text style={styles.faceLabel}>
-            {faceTimers[face.faceID] === "showLabel" ? "Micheal" : "Unknown"}
-          </Text>
-        </View>
+        />
       ))}
     </View>
   );
@@ -87,18 +84,8 @@ const styles = StyleSheet.create({
   faceBox: {
     position: "absolute",
     borderWidth: 2,
+    borderColor: "red",
     backgroundColor: "rgba(0, 0, 0, 0.2)",
-  },
-  faceLabel: {
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-    color: "white",
-    padding: 2,
-    borderRadius: 3,
-    textAlign: "center",
-    width: "100%",
   },
 });
 

@@ -27,7 +27,7 @@ export const uploadImage = async (photoUri) => {
         "Content-Type": "multipart/form-data",
       },
     });
-
+    console.log("response", response);
     return response.data;
   } catch (error) {
     console.error("Error sending image to backend:", error);
