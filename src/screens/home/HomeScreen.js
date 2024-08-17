@@ -1,75 +1,149 @@
 import React from "react";
-import { View, Text, TouchableOpacity } from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import { Ionicons } from "@expo/vector-icons";
+import {
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  StyleSheet,
+} from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import Toast from "react-native-toast-message";
 
-const HomeScreen = () => {
-  const navigation = useNavigation();
+const FeatureCard = ({ icon, title, description }) => (
+  <View style={styles.card}>
+    <MaterialCommunityIcons name={icon} size={40} color="#FFD700" />
+    <Text style={styles.cardTitle}>{title}</Text>
+    <Text style={styles.cardDescription}>{description}</Text>
+  </View>
+);
 
-  const handleLogout = () => {
-    navigation.reset({
-      index: 0,
-      routes: [{ name: "Login" }],
-    });
-  };
-
-  // write a function below to show toast message
-
-  const commingSoonMessageHandler = () => {
+export default function Home({ navigation }) {
+  const showToast = () => {
     Toast.show({
-      type: "success",
-      text1: "Coming Soon",
-      text2: "This feature is under development",
+      type: "info",
+      position: "top",
+      text1: "Comming Soon",
+      text2: " This feature is not available yet",
+      visibilityTime: 3000,
+      autoHide: true,
     });
   };
-
   return (
-    <View className="flex-1 bg-black p-4">
-      <Text className="text-white text-2xl mb-4">Emotion Recognition</Text>
+    <LinearGradient colors={["#1E1E1E", "#3D3D3D"]} style={styles.container}>
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+        <View style={styles.header}>
+          <MaterialCommunityIcons
+            name="face-recognition"
+            size={60}
+            color="#FFD700"
+          />
+          <Text style={styles.title}>Secure Face Auth</Text>
+        </View>
 
-      <View className="bg-gray-800 rounded-lg p-4 mb-4">
-        <Text className="text-white">
-          My final year project focuses on emotion recognition using advanced
-          facial analysis.
+        <Text style={styles.subtitle}>
+          Welcome to the Future of Authentication
         </Text>
-      </View>
 
-      <View className="flex-row justify-between mb-4">
-        <TouchableOpacity
-          className="bg-purple-600 rounded-lg py-2 px-4 w-[48%] flex-row items-center justify-center"
-          onPress={commingSoonMessageHandler}
-        >
-          <Ionicons name="person-add" size={24} color="white" />
-          <Text className="text-white text-center ml-2">Enroll</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => navigation.navigate("EmotionRecognition")}
-          className="bg-purple-600 rounded-lg py-2 px-4 w-[48%] flex-row items-center justify-center"
-        >
-          <Ionicons name="search" size={24} color="white" />
-          <Text className="text-white text-center ml-2">Identify</Text>
-        </TouchableOpacity>
-      </View>
+        <Text style={styles.description}>
+          Our cutting-edge facial recognition system provides a seamless and
+          secure way to authenticate users. Leverage the power of AI and
+          computer vision to enhance your application's security.
+        </Text>
 
-      <View className="flex-row justify-between">
+        <View style={styles.featuresContainer}>
+          <FeatureCard
+            icon="shield-check"
+            title="Enhanced Security"
+            description="Biometric authentication adds an extra layer of protection to your app."
+          />
+          <FeatureCard
+            icon="lightning-bolt"
+            title="Fast & Efficient"
+            description="Quick authentication process for a smooth user experience."
+          />
+          <FeatureCard
+            icon="cog"
+            title="Easy Integration"
+            description="Simple API for seamless integration into your existing systems."
+          />
+        </View>
+
         <TouchableOpacity
-          className="bg-purple-600 rounded-lg py-2 px-4 w-[48%] flex-row items-center justify-center"
-          onPress={handleLogout}
+          style={styles.button}
+          onPress={showToast}
         >
-          <Ionicons name="log-out-outline" size={24} color="white" />
-          <Text className="text-white text-center ml-2">Logout</Text>
+          <Text style={styles.buttonText}>Get Started</Text>
         </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => navigation.navigate("About")}
-          className="bg-purple-600 rounded-lg py-2 px-4 w-[48%] flex-row items-center justify-center"
-        >
-          <Ionicons name="information-circle" size={24} color="white" />
-          <Text className="text-white text-center ml-2">About</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
+      </ScrollView>
+    </LinearGradient>
   );
-};
+}
 
-export default HomeScreen;
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  scrollContent: {
+    flexGrow: 1,
+    padding: 20,
+    alignItems: "center",
+  },
+  header: {
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: "bold",
+    color: "#FFD700",
+    marginTop: 10,
+  },
+  subtitle: {
+    fontSize: 18,
+    color: "#FFD700",
+    marginBottom: 15,
+    textAlign: "center",
+  },
+  description: {
+    fontSize: 16,
+    color: "#B8B8B8",
+    textAlign: "center",
+    marginBottom: 30,
+  },
+  featuresContainer: {
+    width: "100%",
+    marginBottom: 30,
+  },
+  card: {
+    backgroundColor: "rgba(255, 255, 255, 0.05)",
+    borderRadius: 10,
+    padding: 20,
+    marginBottom: 15,
+    alignItems: "center",
+  },
+  cardTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#FFD700",
+    marginTop: 10,
+    marginBottom: 5,
+  },
+  cardDescription: {
+    fontSize: 14,
+    color: "#B8B8B8",
+    textAlign: "center",
+  },
+  button: {
+    backgroundColor: "#FFD700",
+    paddingVertical: 15,
+    paddingHorizontal: 60,
+    borderRadius: 25,
+    marginTop: 20,
+  },
+  buttonText: {
+    color: "#1E1E1E",
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+});

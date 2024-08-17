@@ -1,136 +1,260 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   View,
   Text,
-  TextInput,
+  StyleSheet,
+  Dimensions,
+  Animated,
   TouchableOpacity,
-  SafeAreaView,
-  ActivityIndicator,
-  StatusBar,
+  Easing,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { Camera } from "expo-camera";
+import * as FaceDetector from "expo-face-detector";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { LinearGradient } from "expo-linear-gradient";
 import Toast from "react-native-toast-message";
-import { signupRequest } from "../../requests/authRequests";
+import { useNavigation } from "@react-navigation/native";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
-export default function SignupScreen({ navigation }) {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [loading, setLoading] = useState(false);
+const { width } = Dimensions.get("window");
+const CIRCLE_SIZE = width * 0.8;
 
-  const handleSignup = async () => {
-    if (password !== confirmPassword) {
-      Toast.show({
-        type: "error",
-        text1: "Password Mismatch",
-        text2: "Passwords do not match",
+const FaceSignup = () => {
+  const [hasPermission, setHasPermission] = useState(null);
+  const [isFaceDetected, setIsFaceDetected] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const progressAnimation = useRef(new Animated.Value(0)).current;
+  const cameraRef = useRef(null);
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    (async () => {
+      const { status } = await Camera.requestCameraPermissionsAsync();
+      setHasPermission(status === "granted");
+    })();
+  }, []);
+
+  useEffect(() => {
+    if (isFaceDetected) {
+      Animated.timing(progressAnimation, {
+        toValue: 100,
+        duration: 10000,
+        easing: Easing.linear,
+        useNativeDriver: false,
+      }).start(({ finished }) => {
+        if (finished) {
+          takePicture();
+        }
       });
-      return;
+    } else {
+      progressAnimation.setValue(0);
     }
+  }, [isFaceDetected]);
 
-    setLoading(true);
-    try {
-      const response = await signupRequest(email, password, firstName);
-      console.log("Signup successful:", response);
+  useEffect(() => {
+    const listener = progressAnimation.addListener(({ value }) => {
+      setProgress(Math.floor(value));
+    });
+    return () => progressAnimation.removeListener(listener);
+  }, []);
+
+  const handleFacesDetected = ({ faces }) => {
+    setIsFaceDetected(faces.length > 0);
+  };
+
+  const takePicture = async () => {
+    if (cameraRef.current && progress === 100) {
+      const photo = await cameraRef.current.takePictureAsync();
+      await storeFace(photo.uri);
       Toast.show({
         type: "success",
-        text1: "Signup Successful",
-        text2: "Welcome to our app!",
+        text1: "Success",
+        text2: "Face successfully enrolled!",
+        visibilityTime: 2000,
+        autoHide: true,
+        topOffset: 30,
+        bottomOffset: 40,
       });
-      navigation.navigate("Home");
-    } catch (error) {
-      Toast.show({
-        type: "error",
-        text1: "Signup Failed",
-        text2: error.message || "An error occurred during signup",
-      });
-    } finally {
-      setLoading(false);
+      setTimeout(() => {
+        navigation.navigate("Home");
+      }, 2000);
     }
   };
 
+  const storeFace = async (uri) => {
+    try {
+      const storedFaces = await AsyncStorage.getItem("storedFaces");
+      const faces = storedFaces ? JSON.parse(storedFaces) : [];
+      faces.push(uri);
+      await AsyncStorage.setItem("storedFaces", JSON.stringify(faces));
+    } catch (error) {
+      console.error("Error storing face:", error);
+    }
+  };
+
+  if (hasPermission === null) {
+    return <View />;
+  }
+  if (hasPermission === false) {
+    return <Text style={styles.errorText}>No access to camera</Text>;
+  }
+
   return (
-    <SafeAreaView className="flex-1 bg-gray-900">
-      <StatusBar barStyle="light-content" />
-      <View className="flex-1 px-6 py-10">
-        <TouchableOpacity className="mb-8" onPress={() => navigation.goBack()}>
-          <Ionicons name="arrow-back" size={24} color="white" />
-        </TouchableOpacity>
+    <LinearGradient colors={["#1E1E1E", "#3D3D3D"]} style={styles.container}>
+      <TouchableOpacity
+        style={styles.backButton}
+        onPress={() => navigation.goBack()}
+      >
+        <MaterialCommunityIcons name="chevron-left" size={30} color="#FFD700" />
+      </TouchableOpacity>
 
-        <View className="flex-1 justify-center">
-          <Text className="text-white text-3xl font-bold mb-8">
-            Create Account
-          </Text>
+      <Text style={styles.title}>Enroll Face</Text>
 
-          <Text className="text-gray-400 mb-6">
-            Join us to experience advanced face recognition technology.
-          </Text>
-
-          <View className="bg-gray-800 rounded-lg p-4 mb-4">
-            <TextInput
-              placeholder="First Name"
-              placeholderTextColor="#999"
-              className="text-white"
-              value={firstName}
-              onChangeText={setFirstName}
-            />
-          </View>
-
-          <View className="bg-gray-800 rounded-lg p-4 mb-4">
-            <TextInput
-              placeholder="Email"
-              placeholderTextColor="#999"
-              className="text-white"
-              value={email}
-              onChangeText={setEmail}
-              keyboardType="email-address"
-              autoCapitalize="none"
-            />
-          </View>
-
-          <View className="bg-gray-800 rounded-lg p-4 mb-4">
-            <TextInput
-              placeholder="Password"
-              placeholderTextColor="#999"
-              secureTextEntry
-              className="text-white"
-              value={password}
-              onChangeText={setPassword}
-            />
-          </View>
-
-          <View className="bg-gray-800 rounded-lg p-4 mb-6">
-            <TextInput
-              placeholder="Confirm Password"
-              placeholderTextColor="#999"
-              secureTextEntry
-              className="text-white"
-              value={confirmPassword}
-              onChangeText={setConfirmPassword}
-            />
-          </View>
-
-          <TouchableOpacity
-            className="bg-purple-600 rounded-lg p-4 items-center mb-4"
-            onPress={handleSignup}
-            disabled={loading}
-          >
-            {loading ? (
-              <ActivityIndicator color="white" />
-            ) : (
-              <Text className="text-white font-bold">Sign up</Text>
-            )}
-          </TouchableOpacity>
-
-          <View className="flex-row justify-center">
-            <Text className="text-gray-400">Already have an account? </Text>
-            <TouchableOpacity onPress={() => navigation.navigate("Login")}>
-              <Text className="text-purple-600 font-bold">Log in</Text>
-            </TouchableOpacity>
-          </View>
+      <View style={styles.cameraWrapper}>
+        <View style={styles.cameraContainer}>
+          <Camera
+            ref={cameraRef}
+            type={Camera.Constants.Type.front}
+            style={styles.camera}
+            onFacesDetected={handleFacesDetected}
+            faceDetectorSettings={{
+              mode: FaceDetector.FaceDetectorMode.fast,
+              detectLandmarks: FaceDetector.FaceDetectorLandmarks.none,
+              runClassifications: FaceDetector.FaceDetectorClassifications.none,
+              minDetectionInterval: 100,
+              tracking: true,
+            }}
+          />
+        </View>
+        <View style={styles.overlayContainer}>
+          <Animated.View
+            style={[
+              styles.progressCircle,
+              {
+                borderColor: isFaceDetected ? "#FFD700" : "#B8B8B8",
+                transform: [
+                  {
+                    rotate: progressAnimation.interpolate({
+                      inputRange: [0, 100],
+                      outputRange: ["0deg", "360deg"],
+                    }),
+                  },
+                ],
+              },
+            ]}
+          />
         </View>
       </View>
-    </SafeAreaView>
+
+      <Text style={styles.progressText}>
+        {isFaceDetected ? `${progress}%` : "0%"}
+      </Text>
+
+      <Text style={styles.instructionText}>
+        {isFaceDetected
+          ? "Hold still, enrolling your face..."
+          : "Position your face in the circle"}
+      </Text>
+
+      <TouchableOpacity
+        style={[styles.button, { opacity: progress === 100 ? 1 : 0.5 }]}
+        onPress={takePicture}
+        disabled={progress !== 100}
+      >
+        <Text style={styles.buttonText}>Enroll Face</Text>
+      </TouchableOpacity>
+
+      <Toast ref={(ref) => Toast.setRef(ref)} />
+    </LinearGradient>
   );
-}
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 20,
+  },
+  backButton: {
+    position: "absolute",
+    top: 40,
+    left: 20,
+  },
+  title: {
+    fontSize: 32,
+    fontWeight: "bold",
+    color: "#FFD700",
+    marginBottom: 30,
+    textAlign: "center",
+  },
+  cameraWrapper: {
+    width: CIRCLE_SIZE,
+    height: CIRCLE_SIZE,
+    borderRadius: CIRCLE_SIZE / 2,
+    overflow: "hidden",
+    position: "relative",
+  },
+  cameraContainer: {
+    width: "100%",
+    height: "100%",
+    borderRadius: CIRCLE_SIZE / 2,
+    overflow: "hidden",
+    borderWidth: 3,
+    borderColor: "#FFD700",
+  },
+  camera: {
+    width: "100%",
+    height: "100%",
+  },
+  overlayContainer: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  progressCircle: {
+    width: CIRCLE_SIZE,
+    height: CIRCLE_SIZE,
+    borderRadius: CIRCLE_SIZE / 2,
+    borderWidth: 3,
+    borderLeftColor: "transparent",
+    borderBottomColor: "transparent",
+    position: "absolute",
+  },
+  progressText: {
+    color: "#FFD700",
+    fontSize: 24,
+    fontWeight: "bold",
+    marginTop: 20,
+  },
+  instructionText: {
+    color: "#B8B8B8",
+    fontSize: 18,
+    textAlign: "center",
+    marginTop: 10,
+    marginBottom: 20,
+  },
+  button: {
+    backgroundColor: "#FFD700",
+    paddingVertical: 15,
+    paddingHorizontal: 60,
+    borderRadius: 25,
+    marginTop: 20,
+  },
+  buttonText: {
+    color: "#1E1E1E",
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+  errorText: {
+    color: "#FFD700",
+    fontSize: 18,
+    textAlign: "center",
+  },
+});
+
+export default FaceSignup;
