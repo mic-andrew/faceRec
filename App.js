@@ -5,10 +5,8 @@ import LoginScreen from "./src/screens/auth/LoginScreen";
 import HomeScreen from "./src/screens/home/HomeScreen";
 import SignupScreen from "./src/screens/auth/Signup";
 import Toast from "react-native-toast-message";
-import AboutScreen from "./src/screens/home/AboutScreen";
 import FaceAuthentication from "./src/screens/home/FaceAuthentication";
 import EntryScreen from "./src/screens/auth/EntryScreen";
-// import EmotionRecognition from "./src/screens/home/EmotionRecognition";
 
 export default function App() {
   const Stack = createNativeStackNavigator();
@@ -20,10 +18,7 @@ export default function App() {
             headerShown: false,
           }}
         >
-           <Stack.Screen
-            name="entry"
-            component={EntryScreen}
-          />
+          <Stack.Screen name="entry" component={EntryScreen} />
           <Stack.Screen name="Login" component={LoginScreen} />
           <Stack.Screen name="Home" component={HomeScreen} />
           <Stack.Screen
@@ -32,7 +27,6 @@ export default function App() {
           />
 
           <Stack.Screen name="Signup" component={SignupScreen} />
-          <Stack.Screen name="About" component={AboutScreen} />
         </Stack.Navigator>
       </NavigationContainer>
       <Toast />
