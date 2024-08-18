@@ -5,7 +5,7 @@ import * as FileSystem from "expo-file-system";
 
 const url = `${API_BASE_URL}/face-recognition`;
 
-export const uploadImage = async (photoUri) => {
+export const uploadImageRequest = async (photoUri) => {
   try {
     // Read the image as a Base64 string
     const photoBase64 = await FileSystem.readAsStringAsync(photoUri, {
