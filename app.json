@@ -4,10 +4,10 @@
     "slug": "faceRec",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/banner.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/banner.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
