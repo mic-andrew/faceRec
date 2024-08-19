@@ -11,7 +11,7 @@ import { Ionicons } from "@expo/vector-icons";
 
 export default function AboutScreen({ navigation }) {
   return (
-    <SafeAreaView className="flex-1 bg-gray-900">
+    <SafeAreaView className="flex-1 bg-indigo-900">
       <StatusBar barStyle="light-content" />
       <ScrollView className="flex-1 px-6 py-10">
         <TouchableOpacity className="mb-8" onPress={() => navigation.goBack()}>
@@ -19,13 +19,13 @@ export default function AboutScreen({ navigation }) {
         </TouchableOpacity>
 
         <Text className="text-white text-3xl font-bold mb-8">
-          About Our Project
+          About Emotion Insight
         </Text>
 
-        <Text className="text-gray-400 mb-6">
-          Welcome to our Facial Recognition Final Year Project. Our system
-          leverages cutting-edge technology to provide accurate and efficient
-          facial recognition capabilities.
+        <Text className="text-indigo-200 mb-6">
+          Welcome to Emotion Insight, an advanced emotion recognition project.
+          Our system uses cutting-edge AI technology to analyze facial
+          expressions and identify emotions in real-time.
         </Text>
 
         <Text className="text-white text-xl font-semibold mb-4">
@@ -33,39 +33,39 @@ export default function AboutScreen({ navigation }) {
         </Text>
 
         <View className="mb-6">
-          <Text className="text-purple-500 font-semibold mb-2">
-            • Face Detection
+          <Text className="text-indigo-300 font-semibold mb-2">
+            • Real-time Emotion Detection
           </Text>
-          <Text className="text-gray-400">
-            Accurately locate and isolate faces within images or video streams.
-          </Text>
-        </View>
-
-        <View className="mb-6">
-          <Text className="text-purple-500 font-semibold mb-2">
-            • Face Recognition
-          </Text>
-          <Text className="text-gray-400">
-            Match detected faces against a database of known individuals.
+          <Text className="text-indigo-200">
+            Instantly analyze facial expressions to identify emotions.
           </Text>
         </View>
 
         <View className="mb-6">
-          <Text className="text-purple-500 font-semibold mb-2">
-            • Liveness Detection
+          <Text className="text-indigo-300 font-semibold mb-2">
+            • Multi-emotion Recognition
           </Text>
-          <Text className="text-gray-400">
-            Ensure the system is interacting with a real person, not a photo or
-            video.
+          <Text className="text-indigo-200">
+            Detect a wide range of emotions including joy, sadness, anger,
+            surprise, and more.
           </Text>
         </View>
 
         <View className="mb-6">
-          <Text className="text-purple-500 font-semibold mb-2">
-            • ID Card Recognition
+          <Text className="text-indigo-300 font-semibold mb-2">
+            • Emotion History Tracking
           </Text>
-          <Text className="text-gray-400">
-            Extract and verify information from official identification cards.
+          <Text className="text-indigo-200">
+            Keep a record of detected emotions over time for personal insights.
+          </Text>
+        </View>
+
+        <View className="mb-6">
+          <Text className="text-indigo-300 font-semibold mb-2">
+            • User-friendly Interface
+          </Text>
+          <Text className="text-indigo-200">
+            Easy-to-use mobile application for seamless emotion recognition.
           </Text>
         </View>
 
@@ -73,22 +73,21 @@ export default function AboutScreen({ navigation }) {
           Technology Stack:
         </Text>
 
-        <Text className="text-gray-400 mb-6">
+        <Text className="text-indigo-200 mb-6">
           Our project utilizes state-of-the-art machine learning algorithms,
-          computer vision techniques, and mobile development frameworks to
-          deliver a robust and user-friendly facial recognition solution.
+          computer vision techniques, and React Native for a robust and
+          user-friendly emotion recognition solution.
         </Text>
 
         <Text className="text-white text-xl font-semibold mb-4">Team:</Text>
 
-        <Text className="text-gray-400 mb-6">
-          This project is developed by a team of final year computer science
-          students passionate about artificial intelligence and its real-world
-          applications.
+        <Text className="text-indigo-200 mb-6">
+          Developed by a team of final year computer science students passionate
+          about AI and its applications in understanding human emotions.
         </Text>
 
         <TouchableOpacity
-          className="bg-purple-600 rounded-lg p-4 items-center mb-20"
+          className="bg-indigo-500 rounded-lg p-4 items-center mb-20"
           onPress={() => {
             /* Add action for learning more or contacting */
           }}

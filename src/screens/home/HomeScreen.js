@@ -1,5 +1,11 @@
 import React from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  SafeAreaView,
+  ScrollView,
+} from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
 import Toast from "react-native-toast-message";
@@ -14,61 +20,95 @@ const HomeScreen = () => {
     });
   };
 
-  // write a function below to show toast message
-
   const commingSoonMessageHandler = () => {
     Toast.show({
-      type: "success",
+      type: "info",
       text1: "Coming Soon",
       text2: "This feature is under development",
     });
   };
 
   return (
-    <View className="flex-1 bg-black p-4">
-      <Text className="text-white text-2xl mb-4">Face Recognition</Text>
+    <SafeAreaView className="flex-1 bg-indigo-900">
+      <ScrollView className="flex-1 px-6 py-10">
+        <View className="flex-row justify-between items-center mb-8">
+          <Text className="text-white text-3xl font-bold">Emotion Insight</Text>
+          <TouchableOpacity onPress={handleLogout}>
+            <Ionicons name="log-out-outline" size={28} color="white" />
+          </TouchableOpacity>
+        </View>
 
-      <View className="bg-gray-800 rounded-lg p-4 mb-4">
-        <Text className="text-white">
-          We offer SDKs for face recognition, liveness detection, and ID card
-          recognition.
-        </Text>
-      </View>
+        <View className="bg-indigo-800 rounded-2xl p-6 mb-8">
+          <Text className="text-white text-lg mb-2">
+            Welcome to Emotion Insight
+          </Text>
+          <Text className="text-indigo-200">
+            Analyze and understand emotions through facial expressions. Our
+            advanced AI helps you gain deeper insights into emotional states.
+          </Text>
+        </View>
 
-      <View className="flex-row justify-between mb-4">
-        <TouchableOpacity
-          className="bg-purple-600 rounded-lg py-2 px-4 w-[48%] flex-row items-center justify-center"
-          onPress={commingSoonMessageHandler}
-        >
-          <Ionicons name="person-add" size={24} color="white" />
-          <Text className="text-white text-center ml-2">Enroll</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => navigation.navigate("FaceRecognition")}
-          className="bg-purple-600 rounded-lg py-2 px-4 w-[48%] flex-row items-center justify-center"
-        >
-          <Ionicons name="search" size={24} color="white" />
-          <Text className="text-white text-center ml-2">Identify</Text>
-        </TouchableOpacity>
-      </View>
+        <View className="space-y-4">
+          <TouchableOpacity
+            onPress={() => navigation.navigate("EmotionRecognition")}
+            className="bg-indigo-500 rounded-2xl p-4 flex-row items-center"
+          >
+            <Ionicons
+              name="scan-outline"
+              size={24}
+              color="white"
+              className="mr-4"
+            />
+            <Text className="ml-4 text-white text-lg font-semibold">
+              Analyze Emotion
+            </Text>
+          </TouchableOpacity>
 
-      <View className="flex-row justify-between">
-        <TouchableOpacity
-          className="bg-purple-600 rounded-lg py-2 px-4 w-[48%] flex-row items-center justify-center"
-          onPress={handleLogout}
-        >
-          <Ionicons name="log-out-outline" size={24} color="white" />
-          <Text className="text-white text-center ml-2">Logout</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => navigation.navigate("About")}
-          className="bg-purple-600 rounded-lg py-2 px-4 w-[48%] flex-row items-center justify-center"
-        >
-          <Ionicons name="information-circle" size={24} color="white" />
-          <Text className="text-white text-center ml-2">About</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
+          <TouchableOpacity
+            onPress={() => navigation.navigate("Gallery")}
+            className="bg-indigo-500 rounded-2xl p-4 flex-row items-center"
+          >
+            <Ionicons
+              name="images-outline"
+              size={24}
+              color="white"
+              className="mr-4"
+            />
+            <Text className="ml-4 text-white text-lg font-semibold">
+              View Images
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={commingSoonMessageHandler}
+            className="bg-indigo-500 rounded-2xl p-4 flex-row items-center"
+          >
+            <Ionicons
+              name="stats-chart-outline"
+              size={24}
+              color="white"
+              className="mr-4"
+            />
+            <Text className="ml-4 text-white text-lg font-semibold">
+              Emotion History
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={() => navigation.navigate("About")}
+            className="bg-indigo-500 rounded-2xl p-4 flex-row items-center"
+          >
+            <Ionicons
+              name="information-circle-outline"
+              size={24}
+              color="white"
+              className="mr-4"
+            />
+            <Text className="ml-4 text-white text-lg font-semibold">About</Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 

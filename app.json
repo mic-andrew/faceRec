@@ -4,12 +4,12 @@
     "slug": "faceRec",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/banner.png",
+    "icon": "./assets/app-icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/banner.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "image": "./assets/icon.png",
+      "resizeMode": "cover",
+      "backgroundColor": "#1E1E1E"
     },
     "ios": {
       "supportsTablet": true
@@ -28,6 +28,6 @@
       "eas": {
         "projectId": "45383799-6391-4d38-a591-c02f9e8e10c6"
       }
-    }
+     }
   }
 }

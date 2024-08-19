@@ -7,16 +7,18 @@ import {
   SafeAreaView,
   ActivityIndicator,
   StatusBar,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import Toast from "react-native-toast-message";
 import { signupRequest } from "../../requests/authRequests";
 
 export default function SignupScreen({ navigation }) {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [firstName, setFirstName] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleSignup = async () => {
@@ -31,14 +33,14 @@ export default function SignupScreen({ navigation }) {
 
     setLoading(true);
     try {
-      const response = await signupRequest(email, password, firstName);
+      const response = await signupRequest(name, email, password);
       console.log("Signup successful:", response);
       Toast.show({
         type: "success",
         text1: "Signup Successful",
-        text2: "Welcome to our app!",
+        text2: "Welcome to Emotion Sense!",
       });
-      navigation.navigate("Home");
+      navigation.navigate("Login");
     } catch (error) {
       Toast.show({
         type: "error",
@@ -51,86 +53,123 @@ export default function SignupScreen({ navigation }) {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-gray-900">
+    <SafeAreaView className="flex-1 bg-indigo-900">
       <StatusBar barStyle="light-content" />
-      <View className="flex-1 px-6 py-10">
-        <TouchableOpacity className="mb-8" onPress={() => navigation.goBack()}>
-          <Ionicons name="arrow-back" size={24} color="white" />
-        </TouchableOpacity>
-
-        <View className="flex-1 justify-center">
-          <Text className="text-white text-3xl font-bold mb-8">
-            Create Account
-          </Text>
-
-          <Text className="text-gray-400 mb-6">
-            Join us to experience advanced face recognition technology.
-          </Text>
-
-          <View className="bg-gray-800 rounded-lg p-4 mb-4">
-            <TextInput
-              placeholder="First Name"
-              placeholderTextColor="#999"
-              className="text-white"
-              value={firstName}
-              onChangeText={setFirstName}
-            />
-          </View>
-
-          <View className="bg-gray-800 rounded-lg p-4 mb-4">
-            <TextInput
-              placeholder="Email"
-              placeholderTextColor="#999"
-              className="text-white"
-              value={email}
-              onChangeText={setEmail}
-              keyboardType="email-address"
-              autoCapitalize="none"
-            />
-          </View>
-
-          <View className="bg-gray-800 rounded-lg p-4 mb-4">
-            <TextInput
-              placeholder="Password"
-              placeholderTextColor="#999"
-              secureTextEntry
-              className="text-white"
-              value={password}
-              onChangeText={setPassword}
-            />
-          </View>
-
-          <View className="bg-gray-800 rounded-lg p-4 mb-6">
-            <TextInput
-              placeholder="Confirm Password"
-              placeholderTextColor="#999"
-              secureTextEntry
-              className="text-white"
-              value={confirmPassword}
-              onChangeText={setConfirmPassword}
-            />
-          </View>
-
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        className="flex-1"
+      >
+        <View className="flex-1 px-6 py-10">
           <TouchableOpacity
-            className="bg-purple-600 rounded-lg p-4 items-center mb-4"
-            onPress={handleSignup}
-            disabled={loading}
+            className="mb-8"
+            onPress={() => navigation.goBack()}
           >
-            {loading ? (
-              <ActivityIndicator color="white" />
-            ) : (
-              <Text className="text-white font-bold">Sign up</Text>
-            )}
+            <Ionicons name="chevron-back" size={28} color="white" />
           </TouchableOpacity>
 
-          <View className="flex-row justify-center">
-            <Text className="text-gray-400">Already have an account? </Text>
-            <TouchableOpacity onPress={() => navigation.navigate("Login")}>
-              <Text className="text-purple-600 font-bold">Log in</Text>
+          <View className="flex-1 justify-center">
+            <View className="items-center mb-10">
+              <Ionicons name="happy-outline" size={80} color="white" />
+              <Text className="text-white text-3xl font-bold mt-4">
+                Join Emotion Sense
+              </Text>
+              <Text className="text-indigo-200 text-lg mt-2">
+                Create an account to get started
+              </Text>
+            </View>
+
+            <View className="bg-indigo-800 rounded-2xl p-4 mb-4 flex-row items-center">
+              <Ionicons
+                name="person-outline"
+                size={24}
+                color="#94a3b8"
+                className="mr-2"
+              />
+              <TextInput
+                placeholder="Full Name"
+                placeholderTextColor="#94a3b8"
+                className="text-white flex-1 ml-2"
+                value={name}
+                onChangeText={setName}
+                autoCapitalize="words"
+              />
+            </View>
+
+            <View className="bg-indigo-800 rounded-2xl p-4 mb-4 flex-row items-center">
+              <Ionicons
+                name="mail-outline"
+                size={24}
+                color="#94a3b8"
+                className="mr-2"
+              />
+              <TextInput
+                placeholder="Email"
+                placeholderTextColor="#94a3b8"
+                className="text-white flex-1 ml-2"
+                value={email}
+                onChangeText={setEmail}
+                keyboardType="email-address"
+                autoCapitalize="none"
+              />
+            </View>
+
+            <View className="bg-indigo-800 rounded-2xl p-4 mb-4 flex-row items-center">
+              <Ionicons
+                name="lock-closed-outline"
+                size={24}
+                color="#94a3b8"
+                className="mr-2"
+              />
+              <TextInput
+                placeholder="Password"
+                placeholderTextColor="#94a3b8"
+                secureTextEntry
+                className="text-white flex-1 ml-2"
+                value={password}
+                onChangeText={setPassword}
+              />
+            </View>
+
+            <View className="bg-indigo-800 rounded-2xl p-4 mb-6 flex-row items-center">
+              <Ionicons
+                name="lock-closed-outline"
+                size={24}
+                color="#94a3b8"
+                className="mr-2"
+              />
+              <TextInput
+                placeholder="Confirm Password"
+                placeholderTextColor="#94a3b8"
+                secureTextEntry
+                className="text-white flex-1 ml-2"
+                value={confirmPassword}
+                onChangeText={setConfirmPassword}
+              />
+            </View>
+
+            <TouchableOpacity
+              className="bg-indigo-500 rounded-2xl p-4 items-center mb-4"
+              onPress={handleSignup}
+              disabled={loading}
+            >
+              {loading ? (
+                <ActivityIndicator color="white" />
+              ) : (
+                <Text className="text-white font-bold text-lg">Sign Up</Text>
+              )}
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              className="border border-indigo-400 rounded-2xl p-4 items-center"
+              onPress={() => navigation.navigate("Login")}
+            >
+              <Text className="text-indigo-300 font-bold text-lg">
+                Already have an account? Log In
+              </Text>
             </TouchableOpacity>
           </View>
         </View>
-      </View>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }

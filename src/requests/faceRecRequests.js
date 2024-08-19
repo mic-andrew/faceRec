@@ -3,7 +3,7 @@ import axios from "axios";
 import { API_BASE_URL } from "../utils/constants";
 import * as FileSystem from "expo-file-system";
 
-const url = `${API_BASE_URL}/face-recognition`;
+const url = `${API_BASE_URL}/facial-emotion`;
 
 export const uploadImageRequest = async (photoUri) => {
   try {
@@ -34,3 +34,13 @@ export const uploadImageRequest = async (photoUri) => {
     throw error.response ? error.response.data : error.message;
   }
 };
+
+  export const getAllEmotionsRequest = async () => {
+    try {
+      const response = await axios.get(`${url}/history`);
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching emotions:", error);
+      throw error.response ? error.response.data : error.message;
+    }
+  };
