@@ -4,6 +4,7 @@ import { Camera } from "expo-camera";
 import * as FaceDetector from "expo-face-detector";
 import { uploadImageRequest } from "../../requests/faceRecRequests";
 import Toast from "react-native-toast-message";
+import * as Location from "expo-location";
 
 const FaceRecognition = () => {
   const [hasPermission, setHasPermission] = useState(null);
@@ -11,13 +12,24 @@ const FaceRecognition = () => {
   const [isFaceDetected, setIsFaceDetected] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [location, setLocation] = useState(null);
   const cameraRef = useRef(null);
   const timeoutRef = useRef(null);
 
   useEffect(() => {
     (async () => {
-      const { status } = await Camera.requestCameraPermissionsAsync();
-      setHasPermission(status === "granted");
+      const { status: cameraStatus } =
+        await Camera.requestCameraPermissionsAsync();
+      const { status: locationStatus } =
+        await Location.requestForegroundPermissionsAsync();
+      setHasPermission(
+        cameraStatus === "granted" && locationStatus === "granted"
+      );
+
+      if (locationStatus === "granted") {
+        let location = await Location.getCurrentPositionAsync({});
+        setLocation(location);
+      }
     })();
 
     return () => {
@@ -48,7 +60,22 @@ const FaceRecognition = () => {
         base64: true,
       });
 
-      const result = await uploadImageRequest(photo.uri);
+      const timestamp = new Date().toISOString();
+
+      // Ensure we have location data
+      let currentLocation = location;
+      if (!currentLocation) {
+        currentLocation = await Location.getCurrentPositionAsync({});
+      }
+
+      const backendPayload = {
+        image: photo.uri,
+        timestamp: timestamp,
+        latitude: currentLocation.coords.latitude.toString(),
+        longitude: currentLocation.coords.longitude.toString(),
+      };
+
+      const result = await uploadImageRequest(backendPayload);
       console.log("Recognition result:", result);
 
       setIsModalVisible(false);
@@ -78,7 +105,7 @@ const FaceRecognition = () => {
     return <View />;
   }
   if (hasPermission === false) {
-    return <Text>No access to camera</Text>;
+    return <Text>No access to camera or location</Text>;
   }
 
   return (
@@ -157,5 +184,4 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
 });
-
 export default FaceRecognition;
